@@ -1,0 +1,136 @@
+# Creating Dynamic HTML with Templating
+
+## What is Templating
+Templating is a technique used in web development to generate HTML dynamically by embedding data into templates. This allows developers to create reusable HTML structures that can be populated with different data, making it easier to manage and maintain web applications.
+
+## Configuring Express for EJS
+EJS (Embedded JavaScript) is a popular templating engine for Node.js and Express. To use EJS in an Express application, you need to install it first:
+
+```bash
+npm install ejs
+```
+
+Then, configure your Express app to use EJS as the templating engine:
+
+```javascript
+const express = require('express');
+const app = express();
+
+// Set EJS as the templating engine
+app.set('view engine', 'ejs');
+```
+
+## Setting the Views Directory
+By default, Express looks for views in a directory named `views`. You can specify a different directory if needed:
+
+```javascript
+app.set('views', path.join(__dirname, 'views')); // Set custom views directory
+```
+
+## EJS Interpolation Syntax
+EJS uses `<%= %>` for outputting data into the HTML. This syntax allows you to embed JavaScript expressions within your HTML templates.
+
+### Example of EJS Interpolation
+```html
+<h1>Welcome, <%= userName %>!</h1>
+```
+
+In this example, `userName` will be replaced with the actual value when the template is rendered.
+
+## Passing Data to Templates
+You can pass data to EJS templates from your Express routes using the `res.render()` method:
+
+```javascript
+app.get('/', (req, res) => {
+    const userName = 'Alice';
+    res.render('index', { userName }); // Pass data to the template
+});
+```
+
+## Subreddit Template Demo
+To demonstrate EJS templating, you can create a simple subreddit template that displays a list of posts. Here’s a basic example:
+
+### Example of a Subreddit Template
+```html
+<!-- views/subreddit.ejs -->
+<h1>Subreddit Posts</h1>
+<ul>
+    <% posts.forEach(post => { %>
+        <li><%= post.title %> - <%= post.author %></li>
+    <% }); %>
+</ul>
+```
+
+## Conditionals in EJS
+EJS supports conditionals using standard JavaScript syntax. You can use `<% if (condition) { %>` to render content conditionally.
+
+### Example of Conditionals
+```html
+<% if (isLoggedIn) { %>
+    <p>Welcome back, <%= userName %>!</p>
+<% } else { %>
+    <p>Please log in.</p>
+<% } %>
+```
+
+## Loops in EJS
+You can use loops to iterate over arrays or objects in EJS. The syntax is similar to standard JavaScript.
+
+### Example of Loops
+```html
+<ul>
+    <% for (let i = 0; i < items.length; i++) { %>
+        <li><%= items[i] %></li>
+    <% } %>
+</ul>
+```
+
+## A More Complete Subreddit Demo
+Combining the previous concepts, you can create a more complete subreddit demo that includes conditionals and loops:
+
+```javascript
+app.get('/subreddit', (req, res) => {
+    const posts = [
+        { title: 'Post 1', author: 'User1' },
+        { title: 'Post 2', author: 'User2' }
+    ];
+    const isLoggedIn = true;
+    res.render('subreddit', { posts, isLoggedIn });
+});
+```
+
+## Serving Static Assets in Express
+To serve static files (like CSS, JavaScript, and images) in Express, use the `express.static` middleware:
+
+```javascript
+app.use(express.static('public')); // Serve static files from the 'public' directory
+```
+
+## Bootstrap and Express
+Bootstrap is a popular CSS framework that can be easily integrated into Express applications. You can include Bootstrap in your EJS templates by linking to its CDN in the `<head>` section:
+
+```html
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+```
+
+## EJS and Partials
+Partials are reusable EJS templates that can be included in other templates. This is useful for creating consistent layouts (like headers and footers) across multiple pages.
+
+### Example of Using Partials
+```html
+<!-- views/layout.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>My App</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <%- include('partials/header') %> <!-- Include header partial -->
+    <div class="container">
+        <%- body %> <!-- Render the main content -->
+    </div>
+    <%- include('partials/footer') %> <!-- Include footer partial -->
+</body>
+</html>
+```
